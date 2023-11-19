@@ -31,11 +31,15 @@ export const useQueryStore = defineStore('query', () => {
     queryVariablesState.value = { ...queryVariables };
   }
 
+  function deleteVariable(name: string) {
+    delete queryVariablesState.value[name];
+  }
+
   function getVariableAnchor(name: string) {
     return '${' + name + '}';
   }
 
-  function setup(querySettings:QuerySettings){
+  function setup(querySettings: QuerySettings) {
     queryBaseState.value = querySettings.queryBase;
     queryVariablesState.value = querySettings.queryVariables;
   }
@@ -46,7 +50,8 @@ export const useQueryStore = defineStore('query', () => {
     fullQuery,
     setQueryBase,
     setVariable,
+    deleteVariable,
     getVariableAnchor,
-    setup
+    setup,
   };
 });
