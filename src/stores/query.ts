@@ -1,11 +1,6 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
-type Variable = {
-  name: string;
-  value: string;
-};
-
-type QueryVariables = Record<string, Variable>;
+import { QueryVariables } from '@/models/queries/Variables';
 
 export const useQueryStore = defineStore('query', () => {
   const queryBaseState = ref<string>('Example query base.');
@@ -35,9 +30,16 @@ export const useQueryStore = defineStore('query', () => {
     queryVariablesState.value = { ...queryVariables };
   }
 
-  function getVariableAnchor(name:string) {
-    return '${'+name+'}';
+  function getVariableAnchor(name: string) {
+    return '${' + name + '}';
   }
 
-  return { queryBaseState, queryVariablesState, fullQuery, setQueryBase, setVariable, getVariableAnchor };
+  return {
+    queryBaseState,
+    queryVariablesState,
+    fullQuery,
+    setQueryBase,
+    setVariable,
+    getVariableAnchor,
+  };
 });
