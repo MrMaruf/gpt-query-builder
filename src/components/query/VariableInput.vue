@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useQueryStore } from '@/stores/query';
-import {} from 'pinia';
 import CopyToClipboard from '../CopyToClipboard.vue';
 const props = defineProps<{ name: string }>();
 const { name } = props;
