@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, getDocs, collection } from 'firebase/firestore';
 import { firestoreDB } from '@/includes/firebase';
 import type { QuerySettings } from '@/models/queries/Settings';
 
@@ -10,37 +10,55 @@ import type { QuerySettings } from '@/models/queries/Settings';
  */
 type UserQueries = Record<string, QuerySettings>;
 const user = 'MrMaruf';
-const collection = 'queries';
+const userCollectionName = 'users';
+const queryCollectionName = 'queries';
 
-export const useQueryStore = defineStore('query', () => {
-  for
+export const useUserStore = defineStore('user', () => {
   const userQueries = ref<UserQueries>({});
+  const userQueriesAreLoaded = ref<boolean>(false);
 
-  async function setQuerySettings(queryName: string, querySettings: QuerySettings) {
-    if (!userQueries.value[queryName]) {
-      const uid = buildDBUID(queryName);
-      await saveDocument(uid, querySettings);
-    }
+  async function loadSavedQuerySettings() {
+    const subCollection = collection(firestoreDB, userCollectionName, user, queryCollectionName);
+    const querySnapshot = await getDocs(subCollection);
+    const allData: UserQueries = {};
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, ' => ', doc.data());
+      if (doc.exists()) {
+        const data = doc.data() as QuerySettings;
+        allData[data.queryName] = data;
+      }
+    });
+    userQueries.value = { ...allData };
+    userQueriesAreLoaded.value = true;
   }
 
-  function retrieveQuerySettings(queryName: string): QuerySettings {
-    return userQueries.value[queryName];
+  async function saveQuerySettings(queryName: string, querySettings: QuerySettings) {
+    const collection = buildSubCollectionPath(queryName);
+    await saveDocument(collection, querySettings);
+    userQueries.value = { ...userQueries.value, queryName: querySettings };
   }
 
-  return { setQuerySettings, retrieveQuerySettings };
+  async function retrieveQuerySettings(queryName: string): Promise<QuerySettings> {
+    if (userQueriesAreLoaded.value) return userQueries.value[queryName];
+    const collection = buildSubCollectionPath(queryName);
+    return await getDocument(collection);
+  }
+
+  return { userQueries, saveQuerySettings, retrieveQuerySettings, loadSavedQuerySettings };
 });
 
-function buildDBUID(name: string) {
-  return `${user}:${name}`;
+function buildSubCollectionPath(name: string): string[] {
+  return [user, queryCollectionName, name];
 }
 
-async function saveDocument(name: string, documentToSave: object) {
-  const reference = doc(firestoreDB, collection, name);
+async function saveDocument(subCollectionPath: string[], documentToSave: object) {
+  const reference = doc(firestoreDB, userCollectionName, ...subCollectionPath);
   await setDoc(reference, documentToSave);
 }
 
-async function getDocument(name: string): Promise<QuerySettings> {
-  const docRef = doc(firestoreDB, collection, name);
+async function getDocument(subCollectionPath: string[]): Promise<QuerySettings> {
+  const docRef = doc(firestoreDB, userCollectionName, ...subCollectionPath);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {

@@ -4,5 +4,5 @@ import QueryMenu from '@/components/query/QueryMenu.vue';
 </script>
 
 <template>
-    <QueryMenu/>
+    <QueryMenu />
 </template>

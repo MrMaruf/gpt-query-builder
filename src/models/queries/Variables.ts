@@ -1,3 +1,3 @@
-import { QueryVariable } from './Variable';
+import type { QueryVariable } from './Variable';
 
 export type QueryVariables = Record<string, QueryVariable>;

@@ -3,10 +3,23 @@ import { useQueryStore } from '@/stores/query';
 import { storeToRefs } from 'pinia';
 import VariableInput from './VariableInput.vue';
 import CopyToClipboard from '../CopyToClipboard.vue';
+import { onBeforeMount } from 'vue';
+import { useUserStore } from '@/stores/user';
+import { useRoute } from 'vue-router';
 let newVariableName = '';
 const queryStore = useQueryStore();
+const userStore = useUserStore();
+const { retrieveQuerySettings } = userStore;
+const { setVariable, setup } = queryStore;
+onBeforeMount(() => {
+  const route = useRoute();
+  console.log(route.params);
+  const queryName = route.params.queryName as string;
+  const querySettings = retrieveQuerySettings(queryName);
+  console.log(querySettings)
+  setup(querySettings);
+});
 const { queryBaseState, queryVariablesState, fullQuery } = storeToRefs(queryStore);
-const { setVariable } = queryStore;
 const onCreate = () => {
   const newVariable = newVariableName;
   newVariableName = '';
@@ -16,7 +29,8 @@ const onCreate = () => {
 
 <template>
   <div class="container">
-    <h1>Query Builder</h1>
+    <h1>Query editor for</h1>
+    <button></button>
     <div>
       <textarea id="queryBase" v-model="queryBaseState"> </textarea>
     </div>

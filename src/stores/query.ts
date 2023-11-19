@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
-import { QueryVariables } from '@/models/queries/Variables';
+import type { QueryVariables } from '@/models/queries/Variables';
+import type { QuerySettings } from '@/models/queries/Settings';
 
 export const useQueryStore = defineStore('query', () => {
   const queryBaseState = ref<string>('Example query base.');
@@ -34,6 +35,11 @@ export const useQueryStore = defineStore('query', () => {
     return '${' + name + '}';
   }
 
+  function setup(querySettings:QuerySettings){
+    queryBaseState.value = querySettings.queryBase;
+    queryVariablesState.value = querySettings.queryVariables;
+  }
+
   return {
     queryBaseState,
     queryVariablesState,
@@ -41,5 +47,6 @@ export const useQueryStore = defineStore('query', () => {
     setQueryBase,
     setVariable,
     getVariableAnchor,
+    setup
   };
 });
