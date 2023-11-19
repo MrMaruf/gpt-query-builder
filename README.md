@@ -79,6 +79,6 @@ After logging into a correct account.
 firebase deploy
 ```
 
-### Other documents
+## Other documents
 - [Firebase Hosting Documentation](https://firebase.google.com/docs/hosting)
 - [Ideas for project]("./documentation/IDEAS.md")
