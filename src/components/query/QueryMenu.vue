@@ -6,17 +6,17 @@ import CopyToClipboard from '../CopyToClipboard.vue';
 import { onBeforeMount } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { useRoute } from 'vue-router';
+const route = useRoute();
+const queryName = route.params.queryName as string;
 let newVariableName = '';
 const queryStore = useQueryStore();
 const userStore = useUserStore();
 const { retrieveQuerySettings } = userStore;
 const { setVariable, setup } = queryStore;
-onBeforeMount(() => {
-  const route = useRoute();
+onBeforeMount(async () => {
   console.log(route.params);
-  const queryName = route.params.queryName as string;
-  const querySettings = retrieveQuerySettings(queryName);
-  console.log(querySettings)
+  const querySettings = await retrieveQuerySettings(queryName);
+  console.log(querySettings);
   setup(querySettings);
 });
 const { queryBaseState, queryVariablesState, fullQuery } = storeToRefs(queryStore);
@@ -29,7 +29,7 @@ const onCreate = () => {
 
 <template>
   <div class="container">
-    <h1>Query editor for</h1>
+    <h1>Query editor for "{{ queryName }}"</h1>
     <button></button>
     <div>
       <textarea id="queryBase" v-model="queryBaseState"> </textarea>
