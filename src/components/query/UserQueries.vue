@@ -39,13 +39,13 @@ const onCreate = () => {
       <button @click.prevent="onCreate">Create</button>
     </div>
     <div>
-      <a
-        v-for="variable in userQueries"
-        :href="`queries/${variable.queryName}`"
-        :key="variable.queryName"
-      >
-        Edit query <span class="queryName"> "{{ variable.queryName }}" </span>
-      </a>
+      <ul>
+        <li v-for="variable in userQueries" :key="variable.queryName">
+          <a :href="`queries/${variable.queryName}`">
+            Edit query <span class="queryName"> "{{ variable.queryName }}" </span>
+          </a>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -58,7 +58,6 @@ div {
   margin: 15px 0;
 }
 .queryName {
-    font-weight: bold;
-    
+  font-weight: bold;
 }
 </style>
