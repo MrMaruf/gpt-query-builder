@@ -3,20 +3,43 @@ import { useQueryStore } from '@/stores/query';
 import { storeToRefs } from 'pinia';
 import VariableInput from './VariableInput.vue';
 import CopyToClipboard from '../CopyToClipboard.vue';
+import { onBeforeMount } from 'vue';
+import { useUserStore } from '@/stores/user';
+import { useRoute } from 'vue-router';
+import type { QuerySettings } from '@/models/queries/Settings';
+const route = useRoute();
+const queryName = route.params.queryName as string;
 let newVariableName = '';
 const queryStore = useQueryStore();
+const userStore = useUserStore();
+const { retrieveQuerySettings, saveQuerySettings } = userStore;
+const { setVariable, setup } = queryStore;
+onBeforeMount(async () => {
+  console.log(route.params);
+  const querySettings = await retrieveQuerySettings(queryName);
+  console.log(querySettings);
+  setup(querySettings);
+});
 const { queryBaseState, queryVariablesState, fullQuery } = storeToRefs(queryStore);
-const { setVariable } = queryStore;
 const onCreate = () => {
   const newVariable = newVariableName;
   newVariableName = '';
   setVariable(newVariable, '');
 };
+const onSaveQuery = async () => {
+  const querySettings: QuerySettings = {
+    queryName,
+    queryBase: queryBaseState.value,
+    queryVariables: queryVariablesState.value,
+  };
+  await saveQuerySettings(queryName, querySettings);
+};
 </script>
 
 <template>
   <div class="container">
-    <h1>Query Builder</h1>
+    <h1>Query editor for "{{ queryName }}"</h1>
+    <button @click.prevent="onSaveQuery">Save query</button>
     <div>
       <textarea id="queryBase" v-model="queryBaseState"> </textarea>
     </div>

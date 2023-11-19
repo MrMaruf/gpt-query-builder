@@ -1,6 +1,6 @@
 # gpt-query-builder
 
-This template should help get you started developing with Vue 3 in Vite.
+Simple project to create query in an easy and re-usable way. 
 
 ## Recommended IDE Setup
 
@@ -66,3 +66,19 @@ npm run test:e2e
 ```sh
 npm run lint
 ```
+
+### Deploy with Firebase
+First instal CLI tooling for firebase and login into account. 
+```
+npm install -g firebase-tools
+
+firebase login
+```
+After logging into a correct account.
+```
+firebase deploy
+```
+
+## Other documents
+- [Firebase Hosting Documentation](https://firebase.google.com/docs/hosting)
+- [Ideas for project]("./documentation/IDEAS.md")
