@@ -25,6 +25,15 @@ export const useQueryStore = defineStore('query', () => {
     queryBaseState.value = newBase;
   }
 
+  function getVariable(name: string): string {
+    const queryVariables = queryVariablesState.value;
+    const variable = queryVariables[name];
+    if (!variable) {
+      throw new Error(`Variable with this name(${name}) is not found.`);
+    }
+    return variable.value;
+  }
+
   function setVariable(name: string, value: string = '') {
     const queryVariables = queryVariablesState.value;
     queryVariables[name] = { name, value };
@@ -50,6 +59,7 @@ export const useQueryStore = defineStore('query', () => {
     fullQuery,
     setQueryBase,
     setVariable,
+    getVariable,
     deleteVariable,
     getVariableAnchor,
     setup,

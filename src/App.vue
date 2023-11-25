@@ -41,6 +41,7 @@ nav a.router-link-exact-active:hover {
 main {
   margin: 0 25px;
   min-height: 500px;
-  min-width: 80vw;
+  width: 80vw;
+  max-width: 800px;
 }
 </style>
