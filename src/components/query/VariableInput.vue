@@ -3,9 +3,9 @@ import { useQueryStore } from '@/stores/query';
 import CopyToClipboard from '../CopyToClipboard.vue';
 const props = defineProps<{ name: string }>();
 const { name } = props;
-let value = '';
 const queryStore = useQueryStore();
-const { setVariable, deleteVariable, getVariableAnchor } = queryStore;
+const { setVariable, getVariable, deleteVariable, getVariableAnchor } = queryStore;
+let value = getVariable(name);
 const onSave = () => {
   setVariable(name, value);
 };
