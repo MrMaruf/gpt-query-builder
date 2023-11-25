@@ -46,8 +46,10 @@ const onSaveQuery = async () => {
 
     <div>
       <h2>Create new Variable</h2>
-      <input v-model="newVariableName" type="text" />
-      <button @click.prevent="onCreate">Create</button>
+      <div class="controls">
+        <input v-model="newVariableName" type="text" />
+        <button @click.prevent="onCreate">Create</button>
+      </div>
     </div>
     <div>
       <VariableInput
@@ -59,9 +61,7 @@ const onSaveQuery = async () => {
     <div>
       <h2>Full Query</h2>
       <CopyToClipboard name="full query" :to-copy="fullQuery" />
-      <p class="query">
-        {{ fullQuery }}
-      </p>
+      <textarea class="query" :value="fullQuery" disabled></textarea>
     </div>
   </div>
 </template>
@@ -77,15 +77,32 @@ textarea {
   margin: 5px 0;
   display: block;
   min-height: 200px;
-  min-width: 400px;
+  min-width: 70%;
+  /* width: 500px; */
 }
-p.query {
+.controls  {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 300px;
+}
+.controls > button {
+  width: fit-content;
+  flex-basis: 10%;
+  margin-top: 5px;
+}
+.query {
   background-color: gray;
   border: solid 1px black;
   border-radius: 20px;
+  border-bottom-right-radius: 0;
   padding: 15px;
   width: fit-content;
   margin: 15px 0;
   color: white;
+}
+.query:disabled {
+  opacity: 1;
 }
 </style>
