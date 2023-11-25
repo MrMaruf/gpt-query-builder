@@ -22,8 +22,6 @@ export const useUserStore = defineStore('user', () => {
     const querySnapshot = await getDocs(subCollection);
     const allData: UserQueries = {};
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, ' => ', doc.data());
       if (doc.exists()) {
         const data = doc.data() as QuerySettings;
         allData[data.queryName] = data;
@@ -63,10 +61,8 @@ async function getDocument(subCollectionPath: string[]): Promise<QuerySettings> 
 
   if (docSnap.exists()) {
     const data = docSnap.data() as QuerySettings;
-    console.log('Document data:', data);
     return data;
   } else {
-    console.log('No such document!');
     throw new Error('Document not found.');
   }
 }

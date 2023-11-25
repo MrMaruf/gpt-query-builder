@@ -15,9 +15,7 @@ const userStore = useUserStore();
 const { retrieveQuerySettings, saveQuerySettings } = userStore;
 const { setVariable, setup } = queryStore;
 onBeforeMount(async () => {
-  console.log(route.params);
   const querySettings = await retrieveQuerySettings(queryName);
-  console.log(querySettings);
   setup(querySettings);
 });
 const { queryBaseState, queryVariablesState, fullQuery } = storeToRefs(queryStore);
