@@ -17,7 +17,8 @@
   "dependencies": {
     "firebase": "^10.6.0",
     "pinia": "^2.1.7",
-    "vue": "^3.3.4",
+    "vee-validate": "^4.12.3",
+    "vue": "^3.3.12",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
