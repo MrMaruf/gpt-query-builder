@@ -12,7 +12,7 @@ import {
 } from '@vee-validate/rules';
 
 export default {
-  install(app: any) {
+  install() {
     defineRule('required', required);
     defineRule('tos', required);
     defineRule('min', min);
@@ -30,6 +30,8 @@ export default {
     defineRule('onlyAllowedCharacters', (value: string) =>
       /^[\w!@#$%^&*_]+$/.test(value)
     );
+    defineRule('passwordMinLength', min);
+    defineRule('passwordMaxLength', max);
 
     configure({
       generateMessage: (context: Record<string, any>) => {
@@ -53,6 +55,8 @@ export default {
           hasUppercase: `The ${field} must include at least one uppercase letter.`,
           hasSymbol: `The ${field} must include at least one of the following symbols: !@#$%^&*_`,
           onlyAllowedCharacters: `The ${field} can only include alphanumeric characters and the following symbols: !@#$%^&*_`,
+          passwordMinLength: `The password should have at least 12 characters`,
+          passwordMaxLength: `The password cannot be longer than 100 characters`
         };
 
         const message = messages[rule.name]
