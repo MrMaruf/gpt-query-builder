@@ -1,6 +1,13 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import { doc, setDoc, getDoc, getDocs, collection, deleteDoc } from 'firebase/firestore';
+import {
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+  collection,
+  deleteDoc,
+} from 'firebase/firestore';
 import { firestoreDB } from '@/includes/firebase';
 import type { QuerySettings } from '@/models/queries/Settings';
 
@@ -9,16 +16,31 @@ import type { QuerySettings } from '@/models/queries/Settings';
  * @value: firebase id for query setup
  */
 type UserQueries = Record<string, QuerySettings>;
-const user = 'MrMaruf';
+
 const userCollectionName = 'users';
 const queryCollectionName = 'queries';
 
 export const useUserStore = defineStore('user', () => {
   const userQueries = ref<UserQueries>({});
   const userQueriesAreLoaded = ref<boolean>(false);
+  const userRef = ref<string | undefined>(undefined);
+
+  function setUser(newUser: string) {
+    userRef.value = newUser;
+  }
+
+  function clearUser() {
+    userRef.value = undefined;
+  }
 
   async function loadSavedQuerySettings() {
-    const subCollection = collection(firestoreDB, userCollectionName, user, queryCollectionName);
+    const user = checkUser();
+    const subCollection = collection(
+      firestoreDB,
+      userCollectionName,
+      user,
+      queryCollectionName
+    );
     const querySnapshot = await getDocs(subCollection);
     const allData: UserQueries = {};
     querySnapshot.forEach((doc) => {
@@ -31,7 +53,10 @@ export const useUserStore = defineStore('user', () => {
     userQueriesAreLoaded.value = true;
   }
 
-  async function saveQuerySettings(queryName: string, querySettings: QuerySettings): Promise<void> {
+  async function saveQuerySettings(
+    queryName: string,
+    querySettings: QuerySettings
+  ): Promise<void> {
     const collection = buildSubCollectionPath(queryName);
     await saveDocument(collection, querySettings);
     userQueries.value = { ...userQueries.value, queryName: querySettings };
@@ -48,18 +73,41 @@ export const useUserStore = defineStore('user', () => {
     return await getDocument(collection);
   }
 
+  async function isUsernameUnique(username: string) {
+    const usersCollection = collection(firestoreDB, "users");
+    const users = await getDocs(usersCollection);
+    console.log(users);
+    users.forEach((doc) => {
+      console.log(doc.data());
+    });
+
+    // const user = await getDocument([username]);
+    // console.log("User: ", user);
+  }
+
+  function checkUser(): string {
+    if (userRef.value === undefined) {
+      throw new Error('No user is set.');
+    }
+    return userRef.value;
+  }
+
+  function buildSubCollectionPath(name: string): string[] {
+    const user = checkUser();
+    return [user, queryCollectionName, name];
+  }
+
   return {
+    setUser,
+    clearUser,
     userQueries,
     saveQuerySettings,
     deleteQuerySettings,
     retrieveQuerySettings,
     loadSavedQuerySettings,
+    isUsernameUnique,
   };
 });
-
-function buildSubCollectionPath(name: string): string[] {
-  return [user, queryCollectionName, name];
-}
 
 async function saveDocument(subCollectionPath: string[], documentToSave: object) {
   const reference = doc(firestoreDB, userCollectionName, ...subCollectionPath);
@@ -72,9 +120,11 @@ async function deleteDocument(subCollectionPath: string[]) {
 }
 
 async function getDocument(subCollectionPath: string[]): Promise<QuerySettings> {
+  console.log(subCollectionPath);
   const docRef = doc(firestoreDB, userCollectionName, ...subCollectionPath);
+  console.log(docRef);
   const docSnap = await getDoc(docRef);
-
+  console.log(docSnap);
   if (docSnap.exists()) {
     const data = docSnap.data() as QuerySettings;
     return data;
