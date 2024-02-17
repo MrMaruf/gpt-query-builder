@@ -34,7 +34,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function loadSavedQuerySettings() {
-    const user = checkUser();
+    const user = getUser();
     const subCollection = collection(
       firestoreDB,
       userCollectionName,
@@ -74,18 +74,17 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function isUsernameUnique(username: string) {
-    const usersCollection = collection(firestoreDB, "users");
-    const users = await getDocs(usersCollection);
-    console.log(users);
-    users.forEach((doc) => {
-      console.log(doc.data());
+    const userDoc = doc(firestoreDB, 'users', username);
+    const docSnap = await getDoc(userDoc);
+    return !docSnap.exists();
+  }
+  async function saveUsername(username: string) {
+    await saveDocument([username], {
+      exists: true,
     });
-
-    // const user = await getDocument([username]);
-    // console.log("User: ", user);
   }
 
-  function checkUser(): string {
+  function getUser(): string {
     if (userRef.value === undefined) {
       throw new Error('No user is set.');
     }
@@ -93,7 +92,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
   function buildSubCollectionPath(name: string): string[] {
-    const user = checkUser();
+    const user = getUser();
     return [user, queryCollectionName, name];
   }
 
@@ -106,6 +105,8 @@ export const useUserStore = defineStore('user', () => {
     retrieveQuerySettings,
     loadSavedQuerySettings,
     isUsernameUnique,
+    saveUsername,
+    getUser
   };
 });
 

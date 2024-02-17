@@ -20,7 +20,11 @@ const onSubmit = async (formData: typeof schema) => {
   try {
     await register(email, password, username);
   } catch (error: any) {
-    alert('Registration failed! Try different email and username.');
+    if (error instanceof Error) {
+      alert('Registration failed! ' + error.message);
+    } else {
+      alert('Registration failed! Try different email and username.');
+    }
   }
 };
 </script>

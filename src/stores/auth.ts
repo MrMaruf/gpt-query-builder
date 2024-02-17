@@ -21,7 +21,13 @@ export const useAuthStore = defineStore('auth', () => {
   const signedIn = ref<boolean>(false);
   const errorMessage = ref<AuthError | undefined>(undefined);
   const userStore = useUserStore();
-  const { setUser, clearUser, isUsernameUnique } = userStore;
+  const { setUser, clearUser, isUsernameUnique, saveUsername } = userStore;
+
+  function checkAuthCookies(): void {
+    if (firebaseAuth.currentUser) {
+      signedIn.value = true;
+    }
+  }
 
   function isSignedIn(): boolean {
     return signedIn.value;
@@ -32,8 +38,10 @@ export const useAuthStore = defineStore('auth', () => {
     password: string,
     username: string
   ): Promise<void> {
-    
-    await isUsernameUnique(username);
+    const userExist = await isUsernameUnique(username);
+    if (!userExist) {
+      throw new Error('This username is in use');
+    }
     try {
       const userCredential = await createUserWithEmailAndPassword(
         firebaseAuth,
@@ -43,6 +51,7 @@ export const useAuthStore = defineStore('auth', () => {
       await updateProfile(userCredential.user, {
         displayName: username,
       });
+      await saveUsername(username);
       signedIn.value = true;
       setUser(username);
     } catch (error: any) {
@@ -90,5 +99,6 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     signIn,
     signOut,
+    checkAuthCookies
   };
 });

@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import VariableInput from './VariableInput.vue';
-import CopyToClipboard from '../CopyToClipboard.vue';
 import { useUserStore } from '@/stores/user';
 import { onBeforeMount } from 'vue';
 let newQueryName = '';
-const user = 'MrMaruf';
 const userStore = useUserStore();
 const { userQueries } = storeToRefs(userStore);
-const { saveQuerySettings, loadSavedQuerySettings } = userStore;
+const { saveQuerySettings, loadSavedQuerySettings, getUser } = userStore;
+const user = getUser();
 
 onBeforeMount(async () => {
   await loadSavedQuerySettings();
