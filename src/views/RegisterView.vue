@@ -19,6 +19,7 @@ const onSubmit = async (formData: typeof schema) => {
   const { email, username, password } = formData;
   try {
     await register(email, password, username);
+    router.push({ name: 'home' });
   } catch (error: any) {
     if (error instanceof Error) {
       alert('Registration failed! ' + error.message);
