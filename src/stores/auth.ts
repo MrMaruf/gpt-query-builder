@@ -7,6 +7,7 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import { useUserStore } from './user';
+import router from '@/router';
 
 /**
  * @key: query name
@@ -18,15 +19,12 @@ type AuthError = {
 };
 
 export const useAuthStore = defineStore('auth', () => {
-  
   const signedIn = ref<boolean>(false);
   const errorMessage = ref<AuthError | undefined>(undefined);
   const userStore = useUserStore();
   const { setUser, clearUser, isUsernameUnique, saveUsername } = userStore;
 
-  function checkAuthCookies(): void {
-    console.log("checking auth", firebaseAuth)
-    console.log("checking auth", firebaseAuth.currentUser)
+  async function checkAuthCookies(): Promise<void> {
     if (firebaseAuth.currentUser) {
       signedIn.value = true;
       const username = firebaseAuth.currentUser.displayName;
@@ -37,7 +35,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function isSignedIn(): boolean {
-    return firebaseAuth.currentUser !== undefined;
+    return signedIn.value;
   }
 
   async function register(
@@ -100,6 +98,7 @@ export const useAuthStore = defineStore('auth', () => {
     clearUser();
     signedIn.value = false;
     firebaseAuth.signOut();
+    router.push({ name: 'home' });
   }
 
   return {
