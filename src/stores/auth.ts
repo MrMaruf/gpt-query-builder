@@ -26,6 +26,10 @@ export const useAuthStore = defineStore('auth', () => {
   function checkAuthCookies(): void {
     if (firebaseAuth.currentUser) {
       signedIn.value = true;
+      const username = firebaseAuth.currentUser.displayName;
+      if (username) {
+        setUser(username);
+      }
     }
   }
 
@@ -99,6 +103,6 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     signIn,
     signOut,
-    checkAuthCookies
+    checkAuthCookies,
   };
 });

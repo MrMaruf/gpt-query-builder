@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router';
 import { useAuthStore } from './stores/auth';
+import { onMounted } from 'vue';
 
 const authStore = useAuthStore();
-const { isSignedIn } = authStore;
+const { isSignedIn, checkAuthCookies } = authStore;
+onMounted(() => {
+  checkAuthCookies()
+})
 </script>
 
 <template>
