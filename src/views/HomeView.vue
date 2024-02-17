@@ -7,11 +7,6 @@
   <h3 class="arrow">⬅️</h3>
 </template>
 <style scoped>
-h1,
-h2,
-h3 {
-  color: white;
-}
 
 .arrow {
   font-size: 3rem;
