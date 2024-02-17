@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Form, Field, ErrorMessage } from 'vee-validate';
+import { Form, Field, ErrorMessage, type GenericObject } from 'vee-validate';
 import router from '@/router';
 import { useAuthStore } from '@/stores/auth';
 const schema = {
@@ -14,8 +14,7 @@ const schema = {
 const authStore = useAuthStore();
 const { register } = authStore;
 
-const onSubmit = async (formData: typeof schema) => {
-  console.log(formData);
+const onSubmit = async (formData: GenericObject) => {
   const { email, username, password } = formData;
   try {
     await register(email, password, username);

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Form, Field, ErrorMessage } from 'vee-validate';
+import { Form, Field, ErrorMessage, type GenericObject } from 'vee-validate';
 import { useAuthStore } from '@/stores/auth';
 import router from '@/router';
 
@@ -11,7 +11,7 @@ const schema = {
 const authStore = useAuthStore();
 const { signIn } = authStore;
 
-const onSubmitForm = (formData: typeof schema) => {
+const onSubmitForm = (formData: GenericObject) => {
   console.log(formData);
   const { email, password } = formData;
   try {
@@ -24,7 +24,7 @@ const onSubmitForm = (formData: typeof schema) => {
 </script>
 
 <template>
-  <Form @submit="onSubmitForm">
+  <Form @submit="onSubmitForm" :validation-schema="schema">
     <div class="mb-3">
       <Field type="text" name="email" />
       <ErrorMessage class="error" name="email" />
