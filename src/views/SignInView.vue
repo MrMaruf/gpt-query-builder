@@ -25,11 +25,13 @@ const onSubmitForm = (formData: GenericObject) => {
 
 <template>
   <Form @submit="onSubmitForm" :validation-schema="schema">
-    <div class="mb-3">
+    <div class="control">
+      <label for="email">Email</label>
       <Field type="text" name="email" />
       <ErrorMessage class="error" name="email" />
     </div>
-    <div class="mb-3">
+    <div class="control">
+      <label for="password">Password</label>
       <Field type="password" name="password" />
       <ErrorMessage class="error" name="password" />
     </div>

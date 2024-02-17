@@ -42,7 +42,7 @@ const onSubmit = async (formData: GenericObject) => {
       <ErrorMessage class="error" name="email" />
     </div>
     <div class="control">
-      <label for="password">Password:</label>
+      <label for="password">Password</label>
       <Field name="password" :bails="false" v-slot="{ field, errors }">
         <input
           type="password"
