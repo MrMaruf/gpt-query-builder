@@ -8,7 +8,7 @@ import {
   collection,
   deleteDoc,
 } from 'firebase/firestore';
-import { firestoreDB } from '@/includes/firebase';
+import { firebaseAuth, firestoreDB } from '@/includes/firebase';
 import type { QuerySettings } from '@/models/queries/Settings';
 
 /**
@@ -86,9 +86,20 @@ export const useUserStore = defineStore('user', () => {
 
   function getUser(): string {
     if (userRef.value === undefined) {
-      throw new Error('No user is set.');
+      return checkIfFirebaseUserIsPresent();
     }
     return userRef.value;
+  }
+  function checkIfFirebaseUserIsPresent(): string {
+    console.log("Firebase user", firebaseAuth.currentUser)
+    if (firebaseAuth.currentUser) {
+      const username = firebaseAuth.currentUser.displayName;
+      if (username) {
+        userRef.value = username;
+        return username;
+      }
+    }
+    throw new Error('No user is set.');
   }
 
   function buildSubCollectionPath(name: string): string[] {
@@ -106,7 +117,7 @@ export const useUserStore = defineStore('user', () => {
     loadSavedQuerySettings,
     isUsernameUnique,
     saveUsername,
-    getUser
+    getUser,
   };
 });
 
