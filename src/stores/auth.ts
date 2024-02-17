@@ -18,12 +18,15 @@ type AuthError = {
 };
 
 export const useAuthStore = defineStore('auth', () => {
+  
   const signedIn = ref<boolean>(false);
   const errorMessage = ref<AuthError | undefined>(undefined);
   const userStore = useUserStore();
   const { setUser, clearUser, isUsernameUnique, saveUsername } = userStore;
 
   function checkAuthCookies(): void {
+    console.log("checking auth", firebaseAuth)
+    console.log("checking auth", firebaseAuth.currentUser)
     if (firebaseAuth.currentUser) {
       signedIn.value = true;
       const username = firebaseAuth.currentUser.displayName;
@@ -34,7 +37,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function isSignedIn(): boolean {
-    return signedIn.value;
+    return firebaseAuth.currentUser !== undefined;
   }
 
   async function register(
@@ -96,6 +99,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function signOut() {
     clearUser();
     signedIn.value = false;
+    firebaseAuth.signOut();
   }
 
   return {
