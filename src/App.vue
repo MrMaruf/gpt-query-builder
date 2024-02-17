@@ -5,9 +5,9 @@ import { onMounted } from 'vue';
 
 const authStore = useAuthStore();
 const { isSignedIn, checkAuthCookies, signOut } = authStore;
-onMounted(async () => {
-  await checkAuthCookies();
-});
+
+checkAuthCookies();
+
 </script>
 
 <template>

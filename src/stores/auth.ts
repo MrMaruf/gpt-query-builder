@@ -24,7 +24,7 @@ export const useAuthStore = defineStore('auth', () => {
   const userStore = useUserStore();
   const { setUser, clearUser, isUsernameUnique, saveUsername } = userStore;
 
-  async function checkAuthCookies(): Promise<void> {
+  function checkAuthCookies(): void {
     if (firebaseAuth.currentUser) {
       signedIn.value = true;
       const username = firebaseAuth.currentUser.displayName;
